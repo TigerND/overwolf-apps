@@ -1,0 +1,43 @@
+{
+    "name": "overwolf-soundcloud",
+    "description": "Overwolf Soundcloud Player",
+    "version": "0.1.1",
+    "author": {
+        "name": "Alexander Zykov",
+        "email": "tigernwh@gmail.com"
+    },
+    "private": true,
+    "devDependencies": {
+        "util": "~0.10.3",
+        "debug": "~1.0.2",
+        "handlebars": "~1.3.0",
+        "three": ">=0.67.0",
+        "tween.js": "~0.14.0",
+        "jquery": "~1.11.1",
+        "lodash": "~2.4.1",
+        "font-awesome": "~4.1.0",
+        "winreg": "~0.0.12",
+        "nib": "*",
+        "stylus": "*",
+        "fluidity": "*",
+        "browserify": "~4.1.11",
+        "browserify-shim": "~3.6.0",
+        "grunt": "~0.4.5",
+        "grunt-parallel": "*",
+        "grunt-browserify": "*",
+        "grunt-contrib-jshint": "*",
+        "grunt-contrib-uglify": "*",
+        "grunt-contrib-stylus": "*",
+        "grunt-contrib-cssmin": "*",
+        "grunt-contrib-copy": "*",
+        "grunt-contrib-handlebars": "~0.8.0",
+        "grunt-zip": "*",
+        "grunt-contrib-watch": "*",
+        "grunt-cli": "*",
+        "load-grunt-tasks": "*"
+    },
+    "scripts": {
+        "install": "node node_modules/grunt-cli/bin/grunt",
+        "start": "node node_modules/grunt-cli/bin/grunt devel"
+    }
+}
