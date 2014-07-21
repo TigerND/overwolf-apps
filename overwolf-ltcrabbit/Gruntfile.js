@@ -4,6 +4,7 @@
 
 var fs = require('fs'),
     util = require('util'),
+    path = require('path'),
     handlebars = require('handlebars'),
     child_process = require('child_process')
 
@@ -21,7 +22,8 @@ module.exports = function(grunt) {
 
         dirs: {
             dist: './dist',
-            pkg: './dist/package'
+            pkg: './dist/package',
+            tmp: './dist/tmp'
         },
 
         jshint: {
@@ -33,16 +35,31 @@ module.exports = function(grunt) {
             }
         },
 
+        handlebars: {
+            main: {
+                options: {
+                    namespace: 'main',
+                    processName: function(filename) {
+                        return path.basename(filename, '.html')
+                    },
+                    node: true
+                },
+                files: {
+                    "<%= dirs.tmp %>/main/templates.js": ["src/main/templates/**/*.html"],
+                }
+            }
+        },
+
         browserify: {
             main: {
                 bundleOptions: {
                     debug: true
                 },
                 options: {
-                    alias: ['./src/main/index.js:app'],
+                    alias: ['src/main/index.js:app'],
                 },
                 files: {
-                    '<%= dirs.pkg %>/main/app.js': ['./src/main/index.js']
+                    '<%= dirs.pkg %>/main/app.js': ['src/main/index.js']
                 }
             }
         },
@@ -153,7 +170,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('default', ['build'])
 
-    grunt.registerTask('build', ['copy', 'jshint', 'browserify', 'stylus', 'uglify', 'cssmin', 'zip'])
+    grunt.registerTask('build', ['copy', 'handlebars', 'jshint', 'browserify', 'stylus', 'uglify', 'cssmin', 'zip'])
 
     grunt.registerTask('devel', ['build', 'start_overwolf', 'watch'])
 

@@ -1,16 +1,35 @@
-##Overwolf Demo Application
-[Grunt](http://gruntjs.com/) + [JSHint](http://www.jshint.com/about/) + [Browserify](http://browserify.org/) + [Uglify](http://lisperator.net/uglifyjs/) + [Watch](https://github.com/gruntjs/grunt-contrib-watch) for [Overwolf](http://developers.overwolf.com/overview/) WebApp development
+LTCRabbit Monitor for Overwolf
+==============================
 
-###Build & Devel
-To install all required libs and build a package run:
-```sh
-  > npm install
-```
+LTCRabbit Minitor for Overwolf is meant to monitor LTCRabbit mining pool workers using public API.
+Also it provides basic functionality to monitor CGMiner/BFGMiner mining rigs.
 
-To start Grunt's watch mode run:
-```sh
-  > npm start
-```
 
-###Some Useful Links
-* [A year with browserify](http://aeflash.com/2014-03/a-year-with-browserify.html)
+Contacts
+========
+1. [Issues Tracker](https://github.com/TigerND/ltcrabbit-overwolf/issues)
+2. BitMessage: BM-NBP1fqdEH5HdkwFi6K7tpBrLk8HdXYXz
+
+
+The MIT License (MIT)
+=====================
+
+Copyright (c) 2014 Alexander Zykov
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.

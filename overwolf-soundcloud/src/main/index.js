@@ -4,12 +4,12 @@
 
 var debug = require('debug')('overwolf-soundcloud:main')
 
-var $ = require("jquery")
+var $ = require('jquery')
 
 /* Submodules
 ============================================================================= */
 
-var common = require("../common")
+var common = require('../common')
 
 /* Module
 ============================================================================= */
@@ -49,7 +49,7 @@ Application.prototype.start = function() {
         console.log('Location:', window.location)
 
         overwolf.windows.getCurrentWindow(function(result) {
-            if (result.status == "success") {
+            if (result.status == 'success') {
                 console.log('WindowId:', result.window.id)
                 overwolf.windows.changeSize(result.window.id, 400, 26, callback)
             } else {
@@ -109,7 +109,7 @@ Application.prototype.start = function() {
 }
 
 Application.prototype.openHomepage = function() {
-    window.open("https://www.ltcrabbit.com/#afc17o")
+    window.open('https://www.ltcrabbit.com/#afc17o')
 }
 
 Application.prototype.enablePlayerButton = function($button) {
@@ -182,4 +182,14 @@ Application.prototype.next = function() {
 /* Exports
 ============================================================================= */
 
-module.exports = new Application()
+var app = new Application()
+
+module.exports = app
+global.app = app
+
+/* Autostart
+============================================================================= */
+
+$(document).ready(function() {
+    app.start()
+})

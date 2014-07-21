@@ -1,8 +1,18 @@
 
-#webgl-clock {
-	position: absolute;
-	top: 0;
-	left: 0;	
+body {
+    font-family: 'Droid Sans', arial, serif;
+    font-size: 0.7em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;    
+    color: #999;
+    font-weight: 400;
+    line-height: 1em;
+	margin: 10px;
+}
+
+body, h1, h2, h3, h4, h5, h6, p, a {
+    color: #ccc;
+    font-weight: normal;
 }
 
 .player-button {
@@ -15,6 +25,9 @@
 
 .player-button-disabled {
 	color: #ccc;
+}
+
+.player-button-visible {
 }
 
 .player-button-hidden {
@@ -33,13 +46,13 @@
 	padding: 3px;
 }
 
-#TopMenu a:hover,
-#TopMenu activated a {
+#top-menu-panel a:hover,
+#top-menu-panel activated a {
 	color: #fff;
     text-shadow: 0px 0px 10px #fff;
 }
 
-#TopMenu {
+#top-menu-panel {
 	vertical-align: middle;
 	white-space: nowrap;
 }
@@ -48,19 +61,12 @@
 	float: left;
 }
 
-#top-menu-sc-player-buttons {
-	vertical-align: middle;
-	margin-top: -1px;	
-}
-
-#top-menu-sc-track-name {
-	width: 100%;
-}
-
 #top-menu-sc-tool-buttons {
 	float: right;
 }
 
-#sc-widget {
-	display: none;
+#summary-panel {
+	vertical-align: top;
+	white-space: nowrap;
 }
+
