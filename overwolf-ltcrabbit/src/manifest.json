@@ -19,17 +19,23 @@
                 "resizable": true,
                 "size": {
                     "width": 160,
-                    "height": 160
+                    "height": 180
                 },
                 "min_size": {
                     "width": 160,
-                    "height": 160
+                    "height": 180
                 },
                 "max_size": {
                     "width": 160,
                     "height": 1080
                 }
             }
-        }
+        },
+        "externally_connectable": {
+	        "matches": [				
+				"http://*.ltcrabbit.com",
+				"https://*.ltcrabbit.com"
+	        ]
+    	}
     }
 }
