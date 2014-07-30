@@ -4,6 +4,8 @@
 
 var debug = require('debug')('overwolf-soundcloud:common')
 
+var $ = require('jquery')
+
 /* Module exports
 ============================================================================= */
 
@@ -34,8 +36,8 @@ function detectLanguage(cb) {
 
 function dragResize(edge) {
     overwolf.windows.getCurrentWindow(function(result) {
+        console.log('dragResize:', result)
         if (result.status == "success") {
-        	console.log('DragResize:', result.window.id, edge)
             overwolf.windows.dragResize(result.window.id, edge);
         }
     })
@@ -43,6 +45,7 @@ function dragResize(edge) {
 
 function dragMove() {
     overwolf.windows.getCurrentWindow(function(result) {
+        console.log('dragMove:', result)
         if (result.status == "success") {
             overwolf.windows.dragMove(result.window.id);
         }
@@ -51,6 +54,7 @@ function dragMove() {
 
 function closeWindow() {
     overwolf.windows.getCurrentWindow(function(result) {
+        console.log('closeWindow:', result)
         if (result.status == "success") {
             overwolf.windows.close(result.window.id);
         }

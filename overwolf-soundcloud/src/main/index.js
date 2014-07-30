@@ -4,12 +4,14 @@
 
 var debug = require('debug')('overwolf-soundcloud:main')
 
+var overwolf = global.overwolf
+
 var $ = require('jquery')
 
 /* Submodules
 ============================================================================= */
 
-var common = require('../common')
+var common = require('../common');
 
 /* Module
 ============================================================================= */
@@ -20,11 +22,11 @@ function Application() {
     this.common = common
 
     this.templates = require('../../dist/tmp/main/templates.js')
-    
+
     this.ready = false
     this.iframe = null
     this.widget = null
-    
+
     this.startPlaylist = 'https://soundcloud.com/alex-zykov-1/sets/epic-music'
 }
 
@@ -32,11 +34,11 @@ function Application() {
 ============================================================================= */
 
 Application.prototype.ifReady = function(cb) {
-	var self = this
-	
-	if (self.widget && self.ready) {
-		cb(self.widget)
-	}
+    var self = this
+
+    if (self.widget && self.ready) {
+        cb(self.widget)
+    }
 }
 
 /* Implementation
@@ -45,14 +47,20 @@ Application.prototype.ifReady = function(cb) {
 Application.prototype.start = function() {
     var self = this
 
-    $(document).ready(function() {    	
-        console.log('Location:', window.location)
-
+    console.log('Location:', window.location)
+    console.log('Overwolf:', overwolf)
+    
+    self.common.detectLanguage(function(lang) {
+        
+        self.lang = lang
+        
         overwolf.windows.getCurrentWindow(function(result) {
-            if (result.status == 'success') {
+            console.log('getCurrentWindow:', result.status)
+            if (result.status === 'success') {
                 console.log('WindowId:', result.window.id)
-                overwolf.windows.changeSize(result.window.id, 400, 26, callback)
-            } else {
+                overwolf.windows.changeSize(result.window.id, 400, 26, function() {})
+            }
+            else {
                 console.log('getCurrentWindow:', result.status)
             }
         })
@@ -60,7 +68,8 @@ Application.prototype.start = function() {
         var $content = $('#content')
 
         $content.html(self.templates.player({
-        	playlist: self.startPlaylist
+            playlist: self.startPlaylist,
+            lang: self.lang
         }))
 
         $content.mousedown(function() {
@@ -68,6 +77,7 @@ Application.prototype.start = function() {
         })
 
         var iframe = self.iframe = document.getElementById('sc-widget')
+        var SC = global.SC // Just for Cloud9
         var widget = self.widget = SC.Widget(iframe)
 
         console.log('Widget:', widget)
@@ -89,20 +99,20 @@ Application.prototype.start = function() {
 
             widget.bind(SC.Widget.Events.PAUSE, function(evt) {
                 console.log('PAUSE:', evt)
-                
+
                 self.hidePlayerButton($('#pause-button'))
                 self.showPlayerButton($('#play-button'))
             })
 
             widget.bind(SC.Widget.Events.FINISH, function(evt) {
                 console.log('FINISH:', evt)
-                
+
                 self.hidePlayerButton($('#pause-button'))
                 self.showPlayerButton($('#play-button'))
             })
 
             widget.bind(SC.Widget.Events.PLAY_PROGRESS, function(evt) {
-                widget.setVolume(10)
+                widget.setVolume(7)
             })
         })
     })
@@ -113,50 +123,37 @@ Application.prototype.openHomepage = function() {
 }
 
 Application.prototype.enablePlayerButton = function($button) {
-    $button
-        .removeClass('player-button-disabled')
-        .removeClass('player-button-hidden')
-        .addClass('player-button-enabled')
+    $button.removeClass('player-button-disabled').removeClass('player-button-hidden').addClass('player-button-enabled')
 }
 
 Application.prototype.disablePlayerButton = function($button) {
-    $button
-        .removeClass('player-button-enabled')
-        .removeClass('player-button-hidden')
-        .addClass('player-button-disabled')
+    $button.removeClass('player-button-enabled').removeClass('player-button-hidden').addClass('player-button-disabled')
 }
 
 Application.prototype.hidePlayerButton = function($button) {
-    $button
-        .removeClass('player-button-enabled')
-        .removeClass('player-button-disabled')
-        .addClass('player-button-hidden')
+    $button.removeClass('player-button-enabled').removeClass('player-button-disabled').addClass('player-button-hidden')
 }
 
 Application.prototype.showPlayerButton = function($button, enabled) {
-    $button
-        .removeClass('player-button-hidden')
+    $button.removeClass('player-button-hidden')
     if (enabled) {
-        $button
-            .removeClass('player-button-disabled')
-            .addClass('player-button-enabled')
-    } else {
-        $button
-            .removeClass('player-button-enabled')
-            .addClass('player-button-disabled')
+        $button.removeClass('player-button-disabled').addClass('player-button-enabled')
+    }
+    else {
+        $button.removeClass('player-button-enabled').addClass('player-button-disabled')
     }
 }
 
 Application.prototype.play = function() {
-	var self = this
-	
+    var self = this
+
     self.ifReady(function(widget) {
         widget.play()
     })
 }
 
 Application.prototype.pause = function() {
-	var self = this
+    var self = this
 
     self.ifReady(function(widget) {
         widget.pause()
@@ -164,7 +161,7 @@ Application.prototype.pause = function() {
 }
 
 Application.prototype.prev = function() {
-	var self = this
+    var self = this
 
     self.ifReady(function(widget) {
         widget.prev()
@@ -172,7 +169,7 @@ Application.prototype.prev = function() {
 }
 
 Application.prototype.next = function() {
-	var self = this
+    var self = this
 
     self.ifReady(function(widget) {
         widget.next()

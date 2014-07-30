@@ -5,6 +5,8 @@
 
 var debug = require('debug')('overwolf-ltcrabbit:main')
 
+var overwolf = global.overwolf
+
 var $ = require('jquery')
 
 /* Submodules
