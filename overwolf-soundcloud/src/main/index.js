@@ -16,6 +16,9 @@ var common = require('../common');
 /* Module
 ============================================================================= */
 
+/**
+ *  SoundCloud API: https://developers.soundcloud.com/
+ */
 function Application() {
     var self = this
 
@@ -31,7 +34,7 @@ function Application() {
 
     this.startPlaylist = 'https://soundcloud.com/alex-zykov-1/sets/epic-music'
     
-    this.currentVolume = 7
+    this.currentVolume = 0.3
 }
 
 /* Helpers
@@ -101,6 +104,8 @@ Application.prototype.start = function() {
                     console.log('Playing:', currentSound);
                     $("#top-menu-sc-track-name").html(currentSound.title)
                 })
+                
+                self.setVolume()
             })
 
             widget.bind(SC.Widget.Events.PAUSE, function(evt) {
@@ -119,12 +124,58 @@ Application.prototype.start = function() {
 
             widget.bind(SC.Widget.Events.PLAY_PROGRESS, function(evt) {
                 console.log('PROGRESS:', evt, ', Volume:', self.currentVolume) 
-                
-                widget.setVolume(self.currentVolume)
-                self.widgets.playerVolume.html(self.currentVolume.toString() + '%')
+                self.checkVolume()
             })
         })
     })
+}
+
+Application.prototype.checkVolume = function() {
+    var self = this
+    
+    self.widget.getVolume(function(volume) {
+        if (volume != self.currentVolume) {
+            self.setVolume(self.currentVolume)
+        }
+    })
+}
+
+Application.prototype.setVolume = function(volume) {
+    var self = this
+    
+    volume = volume || self.currentVolume
+    
+    self.currentVolume = volume
+    self.widget.setVolume(self.currentVolume)
+
+    console.log('Volume:', volume)
+    self.widgets.playerVolume.html(Math.round(self.currentVolume * 100).toString() + '%')
+}
+
+Application.prototype.volumeDown = function() {
+    var self = this
+
+    console.log('volumeDown')
+    self.changeVolume(-0.01)
+}
+
+Application.prototype.volumeUp = function() {
+    var self = this
+
+    console.log('volumeUp')
+    self.changeVolume(0.01)
+}
+
+Application.prototype.changeVolume = function(delta) {
+    var self = this
+    var newVolume = self.currentVolume + delta
+    
+    if ((newVolume >= 0) && (newVolume <= 1)) {
+        console.log('newVolume:', newVolume)
+        self.setVolume(newVolume)
+    } else {
+        console.warn('newVolume:', newVolume, ' is out of range')
+    }
 }
 
 Application.prototype.openHomepage = function() {

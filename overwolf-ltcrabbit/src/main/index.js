@@ -1,7 +1,6 @@
 /* -*- coding: utf-8 -*-
 ============================================================================= */
 /*jshint asi: true*/
-/*jshint asi: true*/
 
 var debug = require('debug')('overwolf-ltcrabbit:main')
 
@@ -71,5 +70,5 @@ global.app = app
 ============================================================================= */
 
 $(document).ready(function() {
-    app.start();
+    app.start()
 })
