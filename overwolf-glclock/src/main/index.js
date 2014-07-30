@@ -171,12 +171,12 @@ Application.prototype.start = function() {
     this.objects.push(this.arrowMin);
 
     // add hours arrow
-    handTo = 300;
+    handTo = 270;
     var arrowHrShape = new THREE.Shape();
-    arrowHrShape.moveTo(0, -5);
-    arrowHrShape.lineTo(Math.cos(a) * handTo, Math.sin(a) * handTo - 5);
-    arrowHrShape.lineTo(Math.cos(a) * handTo, Math.sin(a) * handTo + 5);
-    arrowHrShape.lineTo(0, 5);
+    arrowHrShape.moveTo(0, -10);
+    arrowHrShape.lineTo(Math.cos(a) * handTo, Math.sin(a) * handTo - 10);
+    arrowHrShape.lineTo(Math.cos(a) * handTo, Math.sin(a) * handTo + 10);
+    arrowHrShape.lineTo(0, 10);
 
     var arrowHrGeom = new THREE.ExtrudeGeometry(arrowHrShape, extrudeOpts);
     this.arrowHr = new THREE.Mesh(arrowHrGeom, new THREE.MeshBasicMaterial({ color:0xffffff }));
