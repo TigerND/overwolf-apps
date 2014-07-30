@@ -5,7 +5,6 @@ WebGL Clock for Overwolf
 ###Contacts
 * [Issues Tracker](https://github.com/TigerND/overwolf-glclock/issues)
 
-
 ###The MIT License (MIT)
 
 Copyright (c) 2014 Alexander Zykov

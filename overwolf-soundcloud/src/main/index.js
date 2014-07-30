@@ -23,11 +23,15 @@ function Application() {
 
     this.templates = require('../../dist/tmp/main/templates.js')
 
+    this.widgets = {}
+
     this.ready = false
     this.iframe = null
     this.widget = null
 
     this.startPlaylist = 'https://soundcloud.com/alex-zykov-1/sets/epic-music'
+    
+    this.currentVolume = 7
 }
 
 /* Helpers
@@ -75,6 +79,8 @@ Application.prototype.start = function() {
         $content.mousedown(function() {
             common.dragMove()
         })
+        
+        self.widgets.playerVolume = $('#player-volume')
 
         var iframe = self.iframe = document.getElementById('sc-widget')
         var SC = global.SC // Just for Cloud9
@@ -112,7 +118,10 @@ Application.prototype.start = function() {
             })
 
             widget.bind(SC.Widget.Events.PLAY_PROGRESS, function(evt) {
-                widget.setVolume(7)
+                console.log('PROGRESS:', evt, ', Volume:', self.currentVolume) 
+                
+                widget.setVolume(self.currentVolume)
+                self.widgets.playerVolume.html(self.currentVolume.toString() + '%')
             })
         })
     })
