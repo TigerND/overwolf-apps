@@ -48,6 +48,7 @@ Application.prototype.start = function() {
     	var apikey = '48ac636eda94a17aeb230e399feda85eac0bb92f411180f9b711eea7dfa87aad'
             self.api.getappdata(apikey, function(data) {
             	console.log(data)
+            	$('#Balance').html(data.user.balance.toFixed(2))
             })
     }))    
 }

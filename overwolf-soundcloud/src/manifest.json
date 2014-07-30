@@ -30,6 +30,12 @@
                     "height": 400
                 }
             }
-        }
+        },
+        "externally_connectable": {
+	        "matches": [				
+				"http://*.soundcloud.com",
+				"https://*.soundcloud.com"
+	        ]
+    	}        
     }
 }
