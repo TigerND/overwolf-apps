@@ -1,18 +1,12 @@
-LTCRabbit Monitor for Overwolf
-==============================
-
-LTCRabbit Minitor for Overwolf is meant to monitor LTCRabbit mining pool workers using public API.
-Also it provides basic functionality to monitor CGMiner/BFGMiner mining rigs.
+##LTCRabbit Monitor for Overwolf
+WebGL Clock for Overwolf
 
 
-Contacts
-========
-1. [Issues Tracker](https://github.com/TigerND/overwolf-ltcrabbit/issues)
-2. BitMessage: BM-NBP1fqdEH5HdkwFi6K7tpBrLk8HdXYXz
+###Contacts
+* [Issues Tracker](https://github.com/TigerND/overwolf-glclock/issues)
 
 
-The MIT License (MIT)
-=====================
+###The MIT License (MIT)
 
 Copyright (c) 2014 Alexander Zykov
 

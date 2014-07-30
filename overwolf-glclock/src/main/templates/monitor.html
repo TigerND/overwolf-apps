@@ -1,0 +1,42 @@
+<div id="top-menu-panel" class="black-panel">
+    <table style="width: 100%;">
+        <tr>
+            <td width="100%">
+                <div class="btn-group top-menu-column">
+                    <a class="player-button player-button-visible player-button-enabled" href="#" onclick="app.openHomepage()"><i class="fa fa-globe fa-fw"></i></a>
+                    <a class="player-button player-button-visible player-button-enabled" href="#" onclick="app.openConfigWindow('config')"><i class="fa fa-cogs fa-fw"></i></a>
+                    <a class="player-button player-button-visible player-button-enabled" href="#" onclick="app.openConfigWindow('about')"><i class="fa fa-shield fa-fw"></i></a>
+                </div>
+            </td>
+            <td>
+                <div class="btn-group">
+                    <a class="player-button player-button-visible player-button-enabled" href='#' onclick="app.common.closeWindow()"><i class="fa fa-times fa-fw"></i></a>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="summary-panel" class="black-panel">
+<table width="100%">
+  <tr>
+    <td align="left"><span class="dev-info-alive">Balance<span></td>
+    <td align="right" colspan="2"><span class="dev-info-alive" id="Balance">-</span></td>
+  </tr>
+  <tr>
+    <td align="left"><span class="dev-info-alive">Hashrate</span></td>
+    <td align="right"><span class="dev-info-alive" id="HashrateScrypt">-</span>&nbsp;</td>
+    <td align="right"><span class="dev-info-alive" id="HashrateX11">-</span></td>
+  </tr>
+  <tr>
+    <td align="left"><span class="dev-info-alive">Sharerate</span></td>
+    <td align="right"><span class="dev-info-alive" id="SharerateScrypt">-</span>&nbsp;</td>
+    <td align="right"><span class="dev-info-alive" id="InvalidX11">-</span></td>
+  </tr>
+  <tr>
+    <td align="left"><span class="dev-info-alive">Invalid</span></td>
+    <td align="right"><span class="dev-info-alive" id="InvalidScrypt">-</span>&nbsp;</td>
+    <td align="right"><span class="dev-info-alive" id="InvalidX11">-</span></td>
+  </tr>
+</table>
+</div>
