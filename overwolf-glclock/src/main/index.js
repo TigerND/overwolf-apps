@@ -222,7 +222,7 @@ Application.prototype.update = function() {
     var date = new Date();
     self.timeSec = date.getSeconds();
     self.timeMin = date.getMinutes();
-    self.timeHr = date.getHours();
+    self.timeHr = date.getHours() + date.getMinutes() / 60;
     
     self.camera.rotation.z = 0;
 
