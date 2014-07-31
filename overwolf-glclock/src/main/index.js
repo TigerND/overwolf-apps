@@ -1,7 +1,6 @@
 /* -*- coding: utf-8 -*-
 ============================================================================= */
 /*jshint asi: true*/
-/*jshint asi: true*/
 
 var debug = require('debug')('overwolf-glclock:main')
 
@@ -23,16 +22,16 @@ function Application() {
 
     this.common = common
     this.templates = require('../../dist/tmp/main/templates.js')
-    
+
     this.content = null
-    
+
     this.scene = null
     this.camera = null
     this.renderer = null
     this.projector = null
-    
+
     this.objects = []
-    
+
     this.container = null
     this.clock = null
     this.arrowHr = null
@@ -65,10 +64,10 @@ Application.prototype.start = function() {
         ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT,
         NEAR = 1,
         FAR = 5000;
-    this.camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
+    this.camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
     this.scene.add(this.camera);
     this.camera.position.set(0, 1500, 500);
-    this.camera.lookAt(new THREE.Vector3(0,0,0));
+    this.camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     // prepare renderer
     this.renderer = new THREE.WebGLRenderer({
@@ -80,7 +79,7 @@ Application.prototype.start = function() {
 
     this.renderer.shadowMapEnabled = true;
     this.renderer.shadowMapSoft = true;
-    
+
     // prepare projector
     this.projector = new THREE.Projector();
 
@@ -98,46 +97,57 @@ Application.prototype.start = function() {
             opacity: 0.5
         })
     );
-    dialMesh.rotation.x = - Math.PI / 2;
+    dialMesh.rotation.x = -Math.PI / 2;
     dialMesh.position.y = 0;
     this.scene.add(dialMesh);
     this.objects.push(dialMesh);
 
     // add self rim shape
     var rimMesh = new THREE.Mesh(
-      new THREE.TorusGeometry(500, 20, 10, 100),
-      new THREE.MeshBasicMaterial({ color:0xffffff })
+        new THREE.TorusGeometry(500, 20, 10, 100),
+        new THREE.MeshBasicMaterial({
+            color: 0xffffff
+        })
     );
-    rimMesh.rotation.x = - Math.PI / 2;
+    rimMesh.rotation.x = -Math.PI / 2;
     this.scene.add(rimMesh);
     this.objects.push(rimMesh);
 
     // add self arrow
     var iHours = 12;
     var mergedArrows = new THREE.Geometry();
-    var extrudeOpts = {amount: 10, steps: 1, bevelSegments: 1, bevelSize: 1, bevelThickness:1};
-    var handFrom = 400, handTo = 450;
+    var extrudeOpts = {
+        amount: 10,
+        steps: 1,
+        bevelSegments: 1,
+        bevelSize: 1,
+        bevelThickness: 1
+    };
+    var handFrom = 400,
+        handTo = 450;
     var a = 1
-    
+
     for (var i = 1; i <= iHours; i++) {
 
-      // prepare each arrow in a circle
-      var arrowShape = new THREE.Shape();
+        // prepare each arrow in a circle
+        var arrowShape = new THREE.Shape();
 
-      var from = (i % 3 === 0) ? 350 : handFrom;
+        var from = (i % 3 === 0) ? 350 : handFrom;
 
-      a = i * Math.PI / iHours * 2;
-      arrowShape.moveTo(Math.cos(a) * from, Math.sin(a) * from);
-      arrowShape.lineTo(Math.cos(a) * from + 5, Math.sin(a) * from + 5);
-      arrowShape.lineTo(Math.cos(a) * handTo + 5, Math.sin(a) * handTo + 5);
-      arrowShape.lineTo(Math.cos(a) * handTo, Math.sin(a) * handTo);
+        a = i * Math.PI / iHours * 2;
+        arrowShape.moveTo(Math.cos(a) * from, Math.sin(a) * from);
+        arrowShape.lineTo(Math.cos(a) * from + 5, Math.sin(a) * from + 5);
+        arrowShape.lineTo(Math.cos(a) * handTo + 5, Math.sin(a) * handTo + 5);
+        arrowShape.lineTo(Math.cos(a) * handTo, Math.sin(a) * handTo);
 
-      var arrowGeom = new THREE.ExtrudeGeometry(arrowShape, extrudeOpts);
-      THREE.GeometryUtils.merge(mergedArrows, arrowGeom);
+        var arrowGeom = new THREE.ExtrudeGeometry(arrowShape, extrudeOpts);
+        THREE.GeometryUtils.merge(mergedArrows, arrowGeom);
     }
-    
-    var arrowsMesh = new THREE.Mesh(mergedArrows, new THREE.MeshBasicMaterial({ color:0xffffff }));
-    arrowsMesh.rotation.x = - Math.PI / 2;
+
+    var arrowsMesh = new THREE.Mesh(mergedArrows, new THREE.MeshBasicMaterial({
+        color: 0xffffff
+    }));
+    arrowsMesh.rotation.x = -Math.PI / 2;
     arrowsMesh.position.y = 10;
     this.scene.add(arrowsMesh);
     this.objects.push(arrowsMesh);
@@ -150,8 +160,10 @@ Application.prototype.start = function() {
     arrowSecShape.lineTo(-50, 5);
 
     var arrowSecGeom = new THREE.ExtrudeGeometry(arrowSecShape, extrudeOpts);
-    this.arrowSec = new THREE.Mesh(arrowSecGeom, new THREE.MeshBasicMaterial({ color:0xffffff }));
-    this.arrowSec.rotation.x = - Math.PI / 2;
+    this.arrowSec = new THREE.Mesh(arrowSecGeom, new THREE.MeshBasicMaterial({
+        color: 0xffffff
+    }));
+    this.arrowSec.rotation.x = -Math.PI / 2;
     this.arrowSec.position.y = 20;
     this.scene.add(this.arrowSec);
     this.objects.push(this.arrowSec);
@@ -164,8 +176,10 @@ Application.prototype.start = function() {
     arrowMinShape.lineTo(0, 5);
 
     var arrowMinGeom = new THREE.ExtrudeGeometry(arrowMinShape, extrudeOpts);
-    this.arrowMin = new THREE.Mesh(arrowMinGeom, new THREE.MeshBasicMaterial({ color:0xffffff }));
-    this.arrowMin.rotation.x = - Math.PI / 2;
+    this.arrowMin = new THREE.Mesh(arrowMinGeom, new THREE.MeshBasicMaterial({
+        color: 0xffffff
+    }));
+    this.arrowMin.rotation.x = -Math.PI / 2;
     this.arrowMin.position.y = 20;
     this.scene.add(this.arrowMin);
     this.objects.push(this.arrowMin);
@@ -179,8 +193,10 @@ Application.prototype.start = function() {
     arrowHrShape.lineTo(0, 10);
 
     var arrowHrGeom = new THREE.ExtrudeGeometry(arrowHrShape, extrudeOpts);
-    this.arrowHr = new THREE.Mesh(arrowHrGeom, new THREE.MeshBasicMaterial({ color:0xffffff }));
-    this.arrowHr.rotation.x = - Math.PI / 2;
+    this.arrowHr = new THREE.Mesh(arrowHrGeom, new THREE.MeshBasicMaterial({
+        color: 0xffffff
+    }));
+    this.arrowHr.rotation.x = -Math.PI / 2;
     this.arrowHr.position.y = 20;
     this.scene.add(this.arrowHr);
     this.objects.push(this.arrowHr);
@@ -188,21 +204,21 @@ Application.prototype.start = function() {
     self.container.mousedown(function() {
         common.dragMove()
     })
-    
-	document.addEventListener('mousedown', function(event) {
-		event.preventDefault();
 
-		var vector = new THREE.Vector3( ( event.clientX / window.innerWidth ) * 2 - 1, - ( event.clientY / window.innerHeight ) * 2 + 1, 0.5 );
-		self.projector.unprojectVector( vector, self.camera );
+    document.addEventListener('mousedown', function(event) {
+        event.preventDefault();
 
-		var raycaster = new THREE.Raycaster( self.camera.position, vector.sub( self.camera.position ).normalize() );
+        var vector = new THREE.Vector3((event.clientX / window.innerWidth) * 2 - 1, -(event.clientY / window.innerHeight) * 2 + 1, 0.5);
+        self.projector.unprojectVector(vector, self.camera);
 
-		var intersects = raycaster.intersectObjects( self.objects );
+        var raycaster = new THREE.Raycaster(self.camera.position, vector.sub(self.camera.position).normalize());
 
-		if ( intersects.length > 0 ) {
-			common.dragMove()
-		}
-	}, false)
+        var intersects = raycaster.intersectObjects(self.objects);
+
+        if (intersects.length > 0) {
+            common.dragMove()
+        }
+    }, false)
 
     // Browser Animation Loop
     var animate = function() {
@@ -217,35 +233,35 @@ Application.prototype.start = function() {
 
 Application.prototype.update = function() {
     var self = this
-    
+
     // get current time
     var date = new Date();
     self.timeSec = date.getSeconds();
     self.timeMin = date.getMinutes();
     self.timeHr = date.getHours() + date.getMinutes() / 60;
-    
+
     self.camera.rotation.z = 0;
 
     // update self arrows positions
-    var rotSec = self.timeSec * 2 * Math.PI / 60 - Math.PI/2;
+    var rotSec = self.timeSec * 2 * Math.PI / 60 - Math.PI / 2;
     self.arrowSec.rotation.z = -rotSec;
 
-    var rotMin = self.timeMin * 2 * Math.PI / 60 - Math.PI/2;
+    var rotMin = self.timeMin * 2 * Math.PI / 60 - Math.PI / 2;
     self.arrowMin.rotation.z = -rotMin;
 
-    var rotHr = self.timeHr * 2 * Math.PI / 12 - Math.PI/2;
+    var rotHr = self.timeHr * 2 * Math.PI / 12 - Math.PI / 2;
     self.arrowHr.rotation.z = -rotHr;
 }
 
 
 Application.prototype.render = function() {
     var self = this
-    
+
     if (self.renderer) {
         self.renderer.render(self.scene, self.camera);
     }
 }
-    
+
 
 /* Exports
 ============================================================================= */

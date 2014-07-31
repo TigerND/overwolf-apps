@@ -4,6 +4,8 @@
 
 var debug = require('debug')('overwolf-soundcloud:common')
 
+var overwolf = global.overwolf // Just for Cloud9
+
 var $ = require('jquery')
 
 /* Module exports
@@ -34,6 +36,9 @@ function detectLanguage(cb) {
     }
 }
 
+/* Mouse events
+============================================================================= */
+
 function dragResize(edge) {
     overwolf.windows.getCurrentWindow(function(result) {
         console.log('dragResize:', result)
@@ -60,3 +65,30 @@ function closeWindow() {
         }
     })
 }
+
+/* Tracer
+============================================================================= */
+
+var tracers = {}
+
+tracers.debug = function(name, cb)
+{
+	console.log('--> ' + name)
+	try {
+		var result = cb(arguments)
+		console.log('<-- ' + name, 'Result:', result)
+		return result
+	}
+	catch(e) {
+		console.trace('ERR ' + e)
+		console.log('<-- ' + name)
+		throw e
+	}
+}
+
+tracers.release = function(name, cb)
+{
+	return cb()
+}
+
+console.tr = tracers.debug
