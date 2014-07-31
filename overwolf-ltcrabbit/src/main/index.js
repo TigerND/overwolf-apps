@@ -38,6 +38,24 @@ function Application() {
     this.api.appversion = '2.0.0'
 
     this.templates = require('../../dist/tmp/main/templates.js')
+    
+    if (window.addEventListener) {
+        window.addEventListener("storage", self.onStorageChange, false)
+    } else {
+        window.attachEvent("onstorage", self.onStorageChange)
+    }
+}
+
+/* localStorage handlers
+============================================================================= */
+
+Application.prototype.onStorageChange = function(e) {
+    var self = this
+	return console.tr('Application.onStorageChange()', function()
+	{
+        if (!e) { e = window.event; }
+        console.log('Event:', e)
+	})
 }
 
 /* Implementation
@@ -92,7 +110,7 @@ Application.prototype.update = function() {
     var self = this
 
     self.api.getappdata(self.config.active.Pool.Workers[0].ApiKey, function(data) {
-    	console.log(data)
+    	console.log('Received data', data)
     	
 		self.fillValue('Balance', data.user.balance, 8)
 		self.fillValue('HashrateScrypt', data.user.hashrate_scrypt, null)
