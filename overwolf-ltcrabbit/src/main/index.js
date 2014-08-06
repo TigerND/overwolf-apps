@@ -21,7 +21,7 @@ function Application() {
 
     this.common = common
 
-    this.config = require('./config.js')
+    this.config = require('../config')
     
     this.config.on('load', function() {
         self.onConfigLoad.apply(self, arguments)
@@ -39,14 +39,13 @@ function Application() {
 
     this.templates = require('../../dist/tmp/main/templates.js')
     
-    if (window.addEventListener) {
-        window.addEventListener("storage", self.onStorageChange, false)
-    } else {
-        window.attachEvent("onstorage", self.onStorageChange)
-    }
+    // Local storage event
+    window.addEventListener("storage", function(e) {
+        self.onStorageChange.apply(self, e)
+    })
 }
 
-/* localStorage handlers
+/* Local storage handlers
 ============================================================================= */
 
 Application.prototype.onStorageChange = function(e) {
@@ -54,7 +53,10 @@ Application.prototype.onStorageChange = function(e) {
 	return console.tr('Application.onStorageChange()', function()
 	{
         if (!e) { e = window.event; }
-        console.log('Event:', e)
+        console.log('Event:', e, 'Self:', self)
+        if (e.key == self.config.key) {
+            self.config.load()
+        }
 	})
 }
 
@@ -164,6 +166,16 @@ Application.prototype.onConfigReset = function() {
 
 /* Mouse events
 ============================================================================= */
+
+Application.prototype.openSettingsWindow = function(page) {
+    overwolf.windows.obtainDeclaredWindow("Settings", function(result) {
+        console.log('Settings window:', result)
+        if (result.status == "success") {
+           window.localStorage.setItem('settings-window-page', page)
+           overwolf.windows.restore(result.window.id, function(result) {});
+        }
+    });
+}
 
 Application.prototype.openHomepage = function() {
     window.open('https://www.ltcrabbit.com/#afc17o')

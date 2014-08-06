@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700'/>
+	
+	<link rel='stylesheet' href='../contrib/onde/css/onde.css'/>
+	<script src="../contrib/onde/js/onde.js" type="text/javascript"></script>
+	
+	<link rel='stylesheet' href='../contrib/css/font-awesome.css'/>
+	<link rel='stylesheet' href='app.min.css'/> 
+	
+	<script src="app.js" type="text/javascript"></script>
+  		
+  </head>
+  <body>    
+    
+    <script id="config-template" type="text/x-handlebars-template">
+	    <div id="onde-settings" style="margin:2px;">
+	    	<h3>Settings</h3>
+		    <form id="onde-settings-form" class="navbar-form navbar-left" method="post">			  
+			  <div class="form-group">
+			    <div class="onde-panel"></div>
+			    <p>
+			    <div class="form-actions">
+				  <button type="submit" name="submit" class="btn btn-primary">Save changes</button>
+				  <button type="button" name="cancel" class="btn" onclick="app.common.closeWindow();">Cancel</button>
+				</div>
+				</p>			  
+			  </div>
+			</form>
+	    </div>
+		</script>
+    
+    <script id="about-template" type="text/x-handlebars-template">
+        <div id="tab-about-layout">
+    	    <div>
+    	        <table>
+    	          <tbody>
+    	            <tr>
+    	              <td>
+                   		<center>
+                   		  <img src='../icons/logo.gif'/>
+                   		  <div>
+                   		   <a href='javascript: window.open("https://www.ltcrabbit.com/#afc17o")'><h2 style="text-shadow: 0px 0px 10px #fff;"><strong>LTCRABBIT</strong></h2></a><p>Version {{ version }}
+                   		   </p>
+                   		  </div>
+                   		</center>
+    	              </td>
+    	            </tr>
+    	            <tr>
+    	              <td>	        
+    			        <div class='txt-about'>
+    				        <p>This application is meant to monitor your <a href='javascript: window.open("https://www.ltcrabbit.com/#afc17o")'>LTCRabbit</a> mining pool workers using public API.
+    				        </p>
+    			        </div>
+    	              </td>
+    	            </tr>
+    	            <tr>
+    	              <td style="text-align: right">	        			        
+    			        <div style="font-size: 0.9em">
+    				        <p>
+    				        Contacts:&nbsp;			        
+    					    <span class="btn-group" id="Donations">
+    					        <span><a style="text-shadow: 0px 0px 10px #555;" href='javascript: window.open("https://github.com/TigerND/ltcrabbit-overwolf/issues")'>Issues Tracker</a></span>&nbsp;
+    				    	</span>
+    				    	</p>
+    					 </div>					 
+    	              </td>
+    	            </tr>
+    	            <tr>
+    	              <td style="text-align: right">	        			        
+    			        <div style="font-size: 0.8em">
+    				        Support the project:&nbsp;			        
+    					    <span class="btn-group" id="Donations">
+    				    	    <span><a style="text-shadow: 0px 0px 10px #555;" href='javascript: window.open("https://in.xapo.com/ref/?c=8RS5MW2")'>XAPO</a></span>&nbsp;
+    				    	    <span><a style="text-shadow: 0px 0px 10px #555;" href='javascript: window.open("https://blockr.io/address/info/149jb88A368BiRDA9swufA8nxN87J5Hstv")'>Bitcoin</a></span>
+    				    	</span>
+    					 </div>					 
+    	              </td>
+    	            </tr>
+    	          </tbody>
+    	        </table>
+    	    </div>
+        </div>
+    </script>
+    
+    <div id="content">    
+    </div>
+    
+  </body>
+</html>

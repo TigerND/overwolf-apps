@@ -29,6 +29,23 @@
                     "width": 160,
                     "height": 1080
                 }
+            },
+            "Settings": {
+                "file": "settings/index.html",
+                "transparent": false,
+                "resizable": true,
+                "size": {
+                    "width": 640,
+                    "height": 480
+                },
+                "min_size": {
+                    "width": 480,
+                    "height": 480
+                },
+                "max_size": {
+                    "width": 1920,
+                    "height": 1080
+                }
             }
         },
         "externally_connectable": {

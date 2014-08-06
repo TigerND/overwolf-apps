@@ -45,7 +45,7 @@ module.exports = function(grunt) {
                     node: true
                 },
                 files: {
-                    "<%= dirs.tmp %>/main/templates.js": ["src/main/templates/**/*.html"],
+                    "<%= dirs.tmp %>/main/templates.js": ["src/main/templates/**/*.html"]
                 }
             }
         },
@@ -61,6 +61,17 @@ module.exports = function(grunt) {
                 files: {
                     '<%= dirs.pkg %>/main/app.js': ['src/main/index.js']
                 }
+            },
+            settngs: {
+                bundleOptions: {
+                    debug: true
+                },
+                options: {
+                    alias: ['src/settings/index.js:app'],
+                },
+                files: {
+                    '<%= dirs.pkg %>/settings/app.js': ['src/settings/index.js']
+                }
             }
         },
 
@@ -70,7 +81,8 @@ module.exports = function(grunt) {
             },
             main: {
                 files: {
-                    '<%= dirs.pkg %>/main/app.min.js': ['<%= dirs.pkg %>/main/app.js']
+                    '<%= dirs.pkg %>/main/app.min.js': ['<%= dirs.pkg %>/main/app.js'],
+                    '<%= dirs.pkg %>/settings/app.min.js': ['<%= dirs.pkg %>/settings/app.js']
                 }
             }
         },
@@ -95,7 +107,8 @@ module.exports = function(grunt) {
                 },
                 files: {
                     '<%= dirs.pkg %>/contrib/css/font-awesome.css': ['contrib/css/font-awesome.css'],
-                    '<%= dirs.pkg %>/main/app.css': ['src/common/**/*.css', 'src/main/**/*.css']
+                    '<%= dirs.pkg %>/main/app.css': ['src/common/**/*.css', 'src/main/**/*.css'],
+                    '<%= dirs.pkg %>/settings/app.css': ['src/common/**/*.css', 'src/settings/**/*.css']
                 }
             }
         },
@@ -108,7 +121,8 @@ module.exports = function(grunt) {
                 },
                 files: {
                     '<%= dirs.pkg %>/contrib/css/font-awesome.min.css': ['<%= dirs.pkg %>/contrib/css/font-awesome.css'],
-                    '<%= dirs.pkg %>/main/app.min.css': ['<%= dirs.pkg %>/main/app.css']
+                    '<%= dirs.pkg %>/main/app.min.css': ['<%= dirs.pkg %>/main/app.css'],
+                    '<%= dirs.pkg %>/settings/app.min.css': ['<%= dirs.pkg %>/settings/app.css']
                 }
             }
         },
@@ -137,6 +151,12 @@ module.exports = function(grunt) {
                 cwd: 'src/main/public',
                 src: '**',
                 dest: '<%= dirs.pkg %>/main'
+            },
+            settings: {
+                expand: true,
+                cwd: 'src/settings/public',
+                src: '**',
+                dest: '<%= dirs.pkg %>/settings'
             },
             contrib: {
                 expand: true,

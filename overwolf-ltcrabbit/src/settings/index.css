@@ -1,0 +1,71 @@
+
+body {
+    background-color: #0d0d0d;
+    font-family: 'Droid Sans', arial, serif;
+    font-size: 0.875em;
+    color: #999;
+    font-weight: 400;
+    line-height: 1em;
+	margin: 10px;
+}
+
+body, h1, h2, h3, h4, h5, h6, p, a {
+    color: #ccc;
+    font-weight: normal;
+}
+
+.player-button {
+	vertical-align: middle;
+}
+
+.player-button-enabled {
+	color: #eee;
+}
+
+.player-button-disabled {
+	color: #ccc;
+}
+
+.player-button-visible {
+}
+
+.player-button-hidden {
+	display: none;
+}
+
+.black-panel {
+	/* background-color: #0d0d0d; */
+	background-image: url("images/background.png");
+	background: linear-gradient(top, rgba(26,26,26,0.9), rgba(0,0,0,0.9));
+	color: #fff;	
+	width: 100%;	
+	border-radius: 3px;
+	box-shadow: 0 0 10px rgba(0,0,0,0.7);
+	margin: 3px;
+	padding: 3px;
+}
+
+#top-menu-panel a:hover,
+#top-menu-panel activated a {
+	color: #fff;
+    text-shadow: 0px 0px 10px #fff;
+}
+
+#top-menu-panel {
+	vertical-align: middle;
+	white-space: nowrap;
+}
+
+.top-menu-column {
+	float: left;
+}
+
+#top-menu-sc-tool-buttons {
+	float: right;
+}
+
+#summary-panel {
+	vertical-align: top;
+	white-space: nowrap;
+}
+
