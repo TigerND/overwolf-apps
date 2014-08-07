@@ -273,6 +273,27 @@ Application.prototype.onWorkerUpdateFailed = function(worker, reason)
 
 Application.prototype.onStateChanged = function()
 {
+	/*jshint -W083 */
+	for (var k in self.workers) {
+		if (self.workers.hasOwnProperty(k)) {
+			var info = self.workers[k]
+			if ((info.appdata.data.user) && (info.appdata.data.user.username !== undefined))
+			{
+				if (info.appdata.data.worker) {						
+					info.appdata.data.worker.forEach(function(v, i, a) {
+						var userName = v.name
+						if (userName.indexOf(info.appdata.data.user.username + '.') === 0) {
+							a[i].name = userName.substring(info.appdata.data.user.username.length + 1)
+						} else {
+							a[i].name = userName.substring(userName.indexOf('.') + 1)
+						}
+					})
+				}
+			}			
+		}
+	}
+	/*jshint +W083 */
+
     var self = this
 	return console.tr('Application.onStateChanged()', function()
 	{
