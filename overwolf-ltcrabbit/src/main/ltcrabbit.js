@@ -44,9 +44,9 @@ LTCRabbit.prototype.query = function(action, apikey, cb, eb)
 		$.ajax({
 		    url: url,
 		    dataType: "json"
-		}).done(function(data){
+		}).done(function(data) {
 			cb(data)
-		}).fail(function(){
+		}).fail(function() {
 		    eb()
 		})
 	} else {
@@ -59,8 +59,8 @@ LTCRabbit.prototype.getappdata = function(apikey, cb, eb)
 	var self = this
 	
 	self.query('getappdata', apikey, 
-		function(data)
-		{	cb(data.getappdata)
+		function(data)	{	
+			cb(data.getappdata)
 		},
 		eb
 	)
