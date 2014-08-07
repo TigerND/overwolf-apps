@@ -23,7 +23,9 @@ var common = require('../common')
 function Settings() {
     var self = this
     
-    self.common = common
+    this.common = common
+    
+    this.templates = require('../../dist/tmp/settings/templates.js')
     
     this.pages = {
         about: require('./about.js'),

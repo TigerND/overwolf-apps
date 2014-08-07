@@ -158,12 +158,9 @@ Config.prototype.valid = function()
 		self.active.Farm.UpdateInterval = Math.max(self.active.Farm.UpdateInterval, 2) || 2
 		self.active.Pool.Workers.forEach(function(v) {
 			if (!v.ApiKey) {
-				/*
 				console.log("Invalid pool account parameters")
 				result = false
 				return false
-				*/
-				v.ApiKey = '48ac636eda94a17aeb230e399feda85eac0bb92f411180f9b711eea7dfa87aad'
 			}
 		})
 		if (!result)

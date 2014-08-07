@@ -45,7 +45,8 @@ module.exports = function(grunt) {
                     node: true
                 },
                 files: {
-                    "<%= dirs.tmp %>/main/templates.js": ["src/main/templates/**/*.html"]
+                    "<%= dirs.tmp %>/main/templates.js": ["src/main/templates/**/*.html"],
+                    "<%= dirs.tmp %>/settings/templates.js": ["src/settings/templates/**/*.html"]
                 }
             }
         },

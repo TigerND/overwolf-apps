@@ -21,6 +21,12 @@ var common = require('../common')
 function AboutPage() {
     var self = this
 
+    this.common = common
+    
+    this.templates = require('../../dist/tmp/settings/templates.js')
+    
+    this.referredLink = "https://www.ltcrabbit.com/#afc17o"
+
     this.$content = null
     this.template = null
 }
@@ -33,7 +39,7 @@ AboutPage.prototype.init = function(content) {
 	return console.tr('AboutPage.init()', function()
 	{
         self.$content = content
-        self.template = Handlebars.compile($("#about-template").html())
+        self.template = self.templates.about
 	})
 }
 
@@ -41,8 +47,10 @@ AboutPage.prototype.activate = function() {
     var self = this
 	return console.tr('AboutPage.activate()', function()
 	{
+        window.document.title = "About"
+        
         self.$content.html(self.template({
-            version: '2.1.0'
+            self: self
         }))
 	})
 }

@@ -35,7 +35,7 @@ function Application() {
     
     this.api = require('./ltcrabbit.js')
     this.api.appname = 'overwolf-ltcrabbit'
-    this.api.appversion = '2.0.0'
+    this.api.appversion = '2.1.0'
 
     this.templates = require('../../dist/tmp/main/templates.js')
     

@@ -2,24 +2,25 @@
 ============================================================================= */
 /*jshint asi: true*/
 
-var debug = require('debug')('overwolf-soundcloud:common')
+var debug = require('debug')('overwolf-utils:common')
 
 var overwolf = global.overwolf // Just for Cloud9
 
 var $ = require('jquery')
 
-/* Module exports
+global.$ = $ // For external scripts
+
+/* Module
 ============================================================================= */
 
-exports.detectLanguage = detectLanguage
-exports.dragResize = dragResize
-exports.dragMove = dragMove
-exports.closeWindow = closeWindow
+function Module() {
+    this.manifest = require('../../dist/package/manifest.json') || {}
+}
 
-/* Implementation
+/* Language
 ============================================================================= */
 
-function detectLanguage(cb) {
+Module.prototype.detectLanguage = function(cb) {
     var language = window.navigator.userLanguage || window.navigator.language;
     if (language) {
         cb(language)
@@ -39,7 +40,7 @@ function detectLanguage(cb) {
 /* Mouse events
 ============================================================================= */
 
-function dragResize(edge) {
+Module.prototype.dragResize = function(edge) {
     overwolf.windows.getCurrentWindow(function(result) {
         console.log('dragResize:', result)
         if (result.status == "success") {
@@ -48,7 +49,7 @@ function dragResize(edge) {
     })
 }
 
-function dragMove() {
+Module.prototype.dragMove = function() {
     overwolf.windows.getCurrentWindow(function(result) {
         console.log('dragMove:', result)
         if (result.status == "success") {
@@ -57,7 +58,7 @@ function dragMove() {
     })
 }
 
-function closeWindow() {
+Module.prototype.closeWindow = function() {
     overwolf.windows.getCurrentWindow(function(result) {
         console.log('closeWindow:', result)
         if (result.status == "success") {
@@ -92,3 +93,8 @@ tracers.release = function(name, cb)
 }
 
 console.tr = tracers.debug
+
+/* Module exports
+============================================================================= */
+
+module.exports = new Module()

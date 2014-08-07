@@ -23,6 +23,8 @@ function ConfigPage() {
 
     this.common = common
     
+    this.templates = require('../../dist/tmp/settings/templates.js')
+    
     this.config = require('../config')
     
     this.$content = null
@@ -37,7 +39,7 @@ ConfigPage.prototype.init = function(content) {
 	return console.tr('ConfigPage.init()', function()
 	{
         self.$content = content
-        self.template = Handlebars.compile($("#config-template").html())
+        self.template = self.templates.config
 	})
 }
 
@@ -45,7 +47,10 @@ ConfigPage.prototype.activate = function() {
     var self = this
 	return console.tr('ConfigPage.activate()', function()
 	{
+        window.document.title = "Settings"
+        
         self.$content.html(self.template({
+        	self: self
         }))
 
 		self.config.load()
