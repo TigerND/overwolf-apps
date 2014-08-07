@@ -10,8 +10,6 @@ var $ = require('jquery'),
     util = require('util'),
     Handlebars = require('handlebars')
 
-global.$ = $ // For external scripts
-
 /* Submodules
 ============================================================================= */
 

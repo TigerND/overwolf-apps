@@ -13,6 +13,54 @@ var $ = require('jquery')
 
 var common = require('../common')
 
+/* StateInfoObject
+============================================================================= */
+
+function StateInfoObject(data)
+{
+	this.requestTime = null
+	this.responseTime = null
+	this.emptyData = data
+	this.data = data
+	this.isExpired = function(timeout)
+	{		
+		if (!this.requestTime)
+			return true
+		var now = new Date().getTime()
+		if ((this.responseTime) && (now - timeout > this.responseTime))
+			return true
+		return false
+	}
+	this.clear = function()
+	{
+		this.data = this.emptyData
+	}
+	this.onRequest = function()
+	{
+		this.requestTime = new Date().getTime()
+		this.responseTime = null
+	}
+	this.onResponse = function(data)
+	{
+		this.responseTime = new Date().getTime()
+		this.data = data
+	}
+	this.onError = function()
+	{
+		this.responseTime = new Date().getTime()
+	}
+}
+
+/* WorkerState
+============================================================================= */
+
+function WorkerState(config) {
+	this.config = config
+	this.appdata = new StateInfoObject({})
+	this.errCount = 0
+	this.firstErrorTime = null
+}
+
 /* Module
 ============================================================================= */
 
@@ -34,10 +82,13 @@ function Application() {
     })
     
     this.api = require('./ltcrabbit.js')
-    this.api.appname = 'overwolf-ltcrabbit'
-    this.api.appversion = '2.1.0'
+    this.api.appname = common.manifest.meta.name
+    this.api.appversion = common.manifest.meta.version
 
     this.templates = require('../../dist/tmp/main/templates.js')
+    
+    this.workers = {}
+    this.miners = {}
     
     // Local storage event
     window.addEventListener("storage", function(e) {
@@ -79,7 +130,11 @@ Application.prototype.start = function() {
         })
         
         self.config.load()
-	})
+    
+        setInterval(function() {
+            self.update.apply(self)
+        }, 1000)
+    })
 }
 
 Application.prototype.checkConfig = function() {
@@ -108,20 +163,6 @@ Application.prototype.fillValue = function(name, value, fractionDigits)
 	}							
 }
 
-Application.prototype.update = function() {
-    var self = this
-
-    self.api.getappdata(self.config.active.Pool.Workers[0].ApiKey, function(data) {
-    	console.log('Received data', data)
-    	
-		self.fillValue('Balance', data.user.balance, 8)
-		self.fillValue('HashrateScrypt', data.user.hashrate_scrypt, null)
-		self.fillValue('HashrateX11', data.user.hashrate_x11, null)
-		self.fillValue('InvalidScrypt', data.user.invalid_shares_scrypt, 2)
-		self.fillValue('InvalidX11', data.user.invalid_shares_x11, 2)
-    })
-}
-
 /* Config events
 ============================================================================= */
 
@@ -141,15 +182,13 @@ Application.prototype.onConfigActivate = function() {
 			self.config.active.Pool.Address = app.api.address									
 		}				
 		
-		app.api.address = self.config.active.Pool.Address
+		self.api.address = self.config.active.Pool.Address
 	
-		app.errCount = 0
-		app.states = {}
-		app.miners = {}
-	
-	    if (self.config.valid()) {
-	        setTimeout(self.update(), 0)
-	    }
+		self.errCount = 0
+		self.workers = {}
+		self.miners = {}
+		
+		self.onStateChanged()
 	})
 }
 
@@ -161,6 +200,105 @@ Application.prototype.onConfigReset = function() {
 	    $.ajax({
 	        url: 'http://goo.gl/FYUj1J'
 	    })
+	})
+}
+
+/* Workers
+============================================================================= */
+
+Application.prototype.stateForWorker = function(worker)
+{
+    var self = this
+	if (!self.workers.hasOwnProperty(worker.UserId)) {
+	    var state = self.workers[worker.UserId] = new WorkerState(worker)
+	    return state
+	} else {
+	    return self.workers[worker.UserId]
+	}
+}
+
+/* Mouse events
+============================================================================= */
+
+Application.prototype.update = function()
+{
+    var self = this
+    console.log("Update:", self)
+	if ((self.config.active) && (self.config.active.Pool.Workers))
+	{
+		self.config.active.Pool.Workers.forEach(function(v) {
+			var worker = v;
+			if (!worker.Disabled) {
+				var info = self.stateForWorker(worker)
+				if (info.appdata.isExpired(self.config.active.Pool.UpdateInterval * 1000)) {
+				    console.log('Expired:', info)
+					info.appdata.onRequest()
+					self.api.getappdata(worker.ApiKey, 
+						function(data) {
+							info.appdata.onResponse(data)
+							self.onWorkerUpdatePassed(info)					
+						}, function () {
+							info.appdata.onError()
+							self.onWorkerUpdateFailed(info, null)
+						}
+					)						
+				}
+			}
+		})
+	}
+}
+
+Application.prototype.onWorkerUpdatePassed = function(worker)
+{
+    var self = this
+    console.log("Worker update passed:", worker)
+	worker.errCount = 0
+	worker.firstErrorTime = null
+	self.onStateChanged()
+}
+
+Application.prototype.onWorkerUpdateFailed = function(worker, reason)
+{
+    var self = this
+    console.log("Worker update failed:", worker, reason)
+	if (worker.errCount === 0) {
+		worker.firstErrorTime = new Date().getTime()
+	}		
+	worker.errCount += 1
+	self.onStateChanged()
+}
+
+/* State
+============================================================================= */
+
+Application.prototype.onStateChanged = function()
+{
+    var self = this
+	return console.tr('Application.onStateChanged()', function()
+	{
+		var balance = 0.0,
+		    hashrate_scrypt = 0.0,
+		    hashrate_x11 = 0.0,
+		    invalid_shares_scrypt = 0.0,
+		    invalid_shares_x11 = 0.0
+		var now = new Date().getTime()
+		for (var k in self.workers) {
+			if (self.workers.hasOwnProperty(k)) {
+				var info =self.workers[k]
+			    if (info.appdata.data.user) {
+					balance += info.appdata.data.user.balance
+				    hashrate_scrypt += info.appdata.data.user.hashrate_scrypt
+				    hashrate_x11 += info.appdata.data.user.hashrate_x11
+				    invalid_shares_scrypt += info.appdata.data.user.invalid_shares_scrypt
+				    invalid_shares_x11 += info.appdata.data.user.invalid_shares_x11
+			    }
+			}
+		}
+		self.fillValue('Balance', balance, 8)
+		self.fillValue('HashrateScrypt', hashrate_scrypt, null)
+		self.fillValue('HashrateX11', hashrate_x11, null)
+		self.fillValue('InvalidScrypt', invalid_shares_scrypt, 2)
+		self.fillValue('InvalidX11', invalid_shares_x11, 2)
 	})
 }
 

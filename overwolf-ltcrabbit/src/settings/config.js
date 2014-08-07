@@ -69,20 +69,9 @@ ConfigPage.prototype.activate = function() {
 		})				
 		  
 		// Bind our form's submit event. We use this to get the data out from Onde
-		$('#onde-settings-form').submit(function (evt) {
+		$('#onde-settings-form').submit(function(evt) {
 		    evt.preventDefault()
-		    if (self.ondeSession) {
-			    var outData = self.ondeSession.getData()
-			    if (outData.errorCount) {
-			        alert("There are " + outData.errorCount + " errors. Check your config")
-			    } else {
-			        console.log(JSON.stringify(outData.data, null, "  "))
-			        self.config.activate(outData.data)
-			        delete self.ondeSession
-			        // Close window
-			        self.common.closeWindow()
-			    }			    	
-		    }
+			self.saveSettings(evt)
 		    return false
 		})	    			
 	})
@@ -91,7 +80,24 @@ ConfigPage.prototype.activate = function() {
 /* Mouse events
 ============================================================================= */
 
-ConfigPage.prototype.saveSettings = function() {
+ConfigPage.prototype.saveSettings = function(evt) {
+    var self = this
+	return console.tr('ConfigPage.saveSettings()', function()
+	{
+	    if (self.ondeSession) {
+		    var outData = self.ondeSession.getData()
+		    if (outData.errorCount) {
+		        console.log('Errors:', outData.errorCount)
+		        alert("There are " + outData.errorCount + " errors. Check your config")
+		    } else {
+		        console.log('Received Data:', outData)
+		        self.config.activate(outData.data)
+		        //delete self.ondeSession
+		        // Close window
+		        //self.common.closeWindow()
+		    }			    	
+	    }
+	})
 }
 
 /* Module exports

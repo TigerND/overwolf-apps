@@ -183,7 +183,7 @@ Config.prototype.load = function()
 	{
 		var conf = window.localStorage.getItem(self.key)
 		if (conf) {
-			console.log("Loaded",conf)
+			console.log("Loaded", conf)
 			try {
 				var config = JSON.parse(conf)
 				self.activate(config)
@@ -202,6 +202,7 @@ Config.prototype.save = function()
 	var self = this
 	return console.tr('Config.save()', function()
 	{	  
+		console.log('Key:', self.key, 'Config:', self.active)
 		window.localStorage.setItem(self.key, JSON.stringify(self.active))
 	})
 }
