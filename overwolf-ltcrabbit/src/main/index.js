@@ -6,7 +6,8 @@ var debug = require('debug')('overwolf-ltcrabbit:main')
 
 var overwolf = global.overwolf // Just for Cloud9
 
-var $ = require('jquery')
+var $ = require('jquery'),
+	Handlebars = require('handlebars')
 
 /* Submodules
 ============================================================================= */
@@ -90,6 +91,8 @@ function Application() {
     this.workers = {}
     this.miners = {}
     
+    this.autoresize = true
+    
     // Local storage event
     window.addEventListener("storage", function(e) {
         self.onStorageChange.apply(self, e)
@@ -119,13 +122,22 @@ Application.prototype.start = function() {
 	return console.tr('Application.start()', function()
 	{
         console.log('Location:', window.location)
-        console.log('overwolf:', overwolf)
+        console.log('Overwolf:', overwolf)
     
-        var $content = $('#content')
-    
-        $content.html(self.templates.monitor())
-    
-        $content.mousedown(function() {
+		Handlebars.registerHelper('hashrate', function(value) {
+			var result = 'n/a'
+			
+			if (value) {
+				result = value.toString() + 'k'
+			}
+
+			return new Handlebars.SafeString(result);
+		});
+		
+		self.$content = $('#content')
+        self.$content.html(self.templates.monitor())
+        
+        self.$content.mousedown(function() {
             common.dragMove()
         })
         
@@ -152,12 +164,12 @@ Application.prototype.checkConfig = function() {
 	})
 }
 
-Application.prototype.fillValue = function(name, value, fractionDigits)
+Application.prototype.fillValue = function(name, value, fractionDigits, suffix)
 {
 	if (value) {
 		if (fractionDigits)
 			value = value.toFixed(fractionDigits)
-		document.getElementById(name).innerHTML = value.toString()
+		document.getElementById(name).innerHTML = value.toString() + (suffix || '')
 	} else {
 		document.getElementById(name).innerHTML = 'n/a'
 	}							
@@ -271,55 +283,95 @@ Application.prototype.onWorkerUpdateFailed = function(worker, reason)
 /* State
 ============================================================================= */
 
-Application.prototype.onStateChanged = function()
+Application.prototype.fillWorkersInfo = function()
 {
-	/*jshint -W083 */
+    var self = this
+
+	var panels = ''
 	for (var k in self.workers) {
 		if (self.workers.hasOwnProperty(k)) {
-			var info = self.workers[k]
-			if ((info.appdata.data.user) && (info.appdata.data.user.username !== undefined))
-			{
-				if (info.appdata.data.worker) {						
-					info.appdata.data.worker.forEach(function(v, i, a) {
-						var userName = v.name
-						if (userName.indexOf(info.appdata.data.user.username + '.') === 0) {
-							a[i].name = userName.substring(info.appdata.data.user.username.length + 1)
-						} else {
-							a[i].name = userName.substring(userName.indexOf('.') + 1)
-						}
-					})
-				}
-			}			
+			var worker = self.workers[k]
+			var name = (worker.appdata.data.user && worker.appdata.data.user.username) ? worker.appdata.data.user.username : 'Workers'
+			panels += self.templates.workers({
+				name: name + '-panel',
+				caption: name,
+				workers: worker.appdata.data.worker
+			})
 		}
 	}
-	/*jshint +W083 */
+    var $workersPanel = $('#workers-panel')
+    $workersPanel.html(panels)
+}
 
+Application.prototype.onStateChanged = function()
+{
     var self = this
 	return console.tr('Application.onStateChanged()', function()
 	{
+	    // Names
+    	for (var k in self.workers) {
+    		if (self.workers.hasOwnProperty(k)) {
+    			var info = self.workers[k]
+    			if ((info.appdata.data.user) && (info.appdata.data.user.username !== undefined))
+    			{
+    				if (info.appdata.data.worker) {						
+                    	/*jshint -W083 */
+    					info.appdata.data.worker.forEach(function(v, i, a) {
+    						var userName = v.name
+    						if (userName.indexOf(info.appdata.data.user.username + '.') === 0) {
+    							a[i].name = userName.substring(info.appdata.data.user.username.length + 1)
+    						} else {
+    							a[i].name = userName.substring(userName.indexOf('.') + 1)
+    						}
+    					})
+                    	/*jshint +W083 */
+    				}
+    			}			
+    		}
+    	}
+
+        // Summary
 		var balance = 0.0,
 		    hashrate_scrypt = 0.0,
 		    hashrate_x11 = 0.0,
 		    invalid_shares_scrypt = 0.0,
 		    invalid_shares_x11 = 0.0
-		var now = new Date().getTime()
-		for (var k in self.workers) {
+		for (k in self.workers) {
 			if (self.workers.hasOwnProperty(k)) {
-				var info =self.workers[k]
-			    if (info.appdata.data.user) {
-					balance += info.appdata.data.user.balance
-				    hashrate_scrypt += info.appdata.data.user.hashrate_scrypt
-				    hashrate_x11 += info.appdata.data.user.hashrate_x11
-				    invalid_shares_scrypt += info.appdata.data.user.invalid_shares_scrypt
-				    invalid_shares_x11 += info.appdata.data.user.invalid_shares_x11
+				var worker = self.workers[k]
+			    if (worker.appdata.data.user) {
+					balance += worker.appdata.data.user.balance
+				    hashrate_scrypt += worker.appdata.data.user.hashrate_scrypt
+				    hashrate_x11 += worker.appdata.data.user.hashrate_x11
+				    invalid_shares_scrypt += worker.appdata.data.user.invalid_shares_scrypt
+				    invalid_shares_x11 += worker.appdata.data.user.invalid_shares_x11
 			    }
 			}
 		}
 		self.fillValue('Balance', balance, 8)
-		self.fillValue('HashrateScrypt', hashrate_scrypt, null)
-		self.fillValue('HashrateX11', hashrate_x11, null)
-		self.fillValue('InvalidScrypt', invalid_shares_scrypt, 2)
-		self.fillValue('InvalidX11', invalid_shares_x11, 2)
+		self.fillValue('HashrateScrypt', hashrate_scrypt, null, 'k')
+		self.fillValue('HashrateX11', hashrate_x11, null, 'k')
+		self.fillValue('InvalidScrypt', invalid_shares_scrypt, 2, '%')
+		self.fillValue('InvalidX11', invalid_shares_x11, 2, '%')
+		
+		//Workers
+		self.fillWorkersInfo()
+		
+		if (self.autoresize) {
+			console.log('Size:', self.$content.outerWidth(true), 'x', self.$content.outerHeight(true))
+		    overwolf.windows.getCurrentWindow(function(result) {
+			    if (result.status == "success") {
+			    	console.log('Resizing window:', result.window.id)
+			        overwolf.windows.changeSize(result.window.id,
+			            self.$content.outerWidth(true),
+			            self.$content.outerHeight(true) + 20,
+			            function() {
+			            	console.log('Window size changed')
+			            }
+			        )
+			    }
+			})
+		}
 	})
 }
 

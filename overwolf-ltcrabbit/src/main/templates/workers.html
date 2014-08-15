@@ -1,0 +1,13 @@
+<div id="{{name}}" class="black-panel">
+<table width="100%">
+    <tr>
+        <td align="center" colspan="2"><span class="dev-info-alive">{{caption}}<span></td>
+    </tr>
+    {{#each workers}}
+    <tr>
+        <td align="left"><span class="dev-info-alive">{{name}}</span></td>
+        <td align="right"><span class="dev-info-alive">{{hashrate hashrate}}</span></td>
+    </tr>
+    {{/each}}
+</table>
+</div>

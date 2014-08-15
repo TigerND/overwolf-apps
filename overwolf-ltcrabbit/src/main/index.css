@@ -46,6 +46,10 @@ body, h1, h2, h3, h4, h5, h6, p, a {
 	padding: 3px;
 }
 
+.worker-panel {
+	margin: 5px;
+}
+
 #top-menu-panel a:hover,
 #top-menu-panel activated a {
 	color: #fff;
