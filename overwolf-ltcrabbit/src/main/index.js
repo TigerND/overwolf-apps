@@ -14,6 +14,8 @@ var $ = require('jquery'),
 
 var common = require('../common')
 
+var hashrate = require('./hashrate.js')
+
 /* StateInfoObject
 ============================================================================= */
 
@@ -69,6 +71,7 @@ function Application() {
     var self = this
 
     this.common = common
+    this.hashrate = hashrate
 
     this.config = require('../config')
     
@@ -124,16 +127,6 @@ Application.prototype.start = function() {
         console.log('Location:', window.location)
         console.log('Overwolf:', overwolf)
     
-		Handlebars.registerHelper('hashrate', function(value) {
-			var result = 'n/a'
-			
-			if (value) {
-				result = value.toString() + 'k'
-			}
-
-			return new Handlebars.SafeString(result);
-		});
-		
 		self.$content = $('#content')
         self.$content.html(self.templates.monitor())
         
@@ -235,7 +228,7 @@ Application.prototype.stateForWorker = function(worker)
 Application.prototype.update = function()
 {
     var self = this
-    console.log("Update:", self)
+    //console.log("Update:", self)
 	if ((self.config.active) && (self.config.active.Pool.Workers))
 	{
 		self.config.active.Pool.Workers.forEach(function(v) {
@@ -349,8 +342,8 @@ Application.prototype.onStateChanged = function()
 			}
 		}
 		self.fillValue('Balance', balance, 8)
-		self.fillValue('HashrateScrypt', hashrate_scrypt, null, 'k')
-		self.fillValue('HashrateX11', hashrate_x11, null, 'k')
+		self.fillValue('HashrateScrypt', self.hashrate.format(hashrate_scrypt * 1024), null, '')
+		self.fillValue('HashrateX11', self.hashrate.format(hashrate_x11 * 1024), null, '')
 		self.fillValue('InvalidScrypt', invalid_shares_scrypt, 2, '%')
 		self.fillValue('InvalidX11', invalid_shares_x11, 2, '%')
 		
