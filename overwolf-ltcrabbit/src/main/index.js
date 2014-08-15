@@ -344,8 +344,8 @@ Application.prototype.onStateChanged = function()
 		self.fillValue('Balance', balance, 8)
 		self.fillValue('HashrateScrypt', self.hashrate.format(hashrate_scrypt * 1024), null, '')
 		self.fillValue('HashrateX11', self.hashrate.format(hashrate_x11 * 1024), null, '')
-		self.fillValue('InvalidScrypt', invalid_shares_scrypt, 2, '%')
-		self.fillValue('InvalidX11', invalid_shares_x11, 2, '%')
+		self.fillValue('InvalidScrypt', hashrate_scrypt ? invalid_shares_scrypt : null, 2, '%')
+		self.fillValue('InvalidX11', hashrate_x11 ? invalid_shares_x11 : null, 2, '%')
 		
 		//Workers
 		self.fillWorkersInfo()
