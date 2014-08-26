@@ -2,10 +2,6 @@
 ============================================================================= */
 /*jshint asi: true*/
 
-var debug = require('debug')('overwolf-ltcrabbit:main')
-
-var overwolf = global.overwolf // Just for Cloud9
-
 var $ = require('jquery'),
 	Handlebars = require('handlebars')
 
@@ -56,7 +52,6 @@ Hashrate.prototype.format = function(value) {
 
 Hashrate.prototype.hbHashrate = function(sender, value) {
 	var self = this
-	console.log('Self:', self)
 	var result = 'n/a'
 	if (value) {
 		result = self.format(value * 1024)
