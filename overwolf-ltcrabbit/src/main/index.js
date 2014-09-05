@@ -4,6 +4,8 @@
 
 var debug = require('debug')('overwolf-ltcrabbit:main')
 
+var util = require('util')
+
 var overwolf = global.overwolf // Just for Cloud9
 
 var $ = require('jquery'),
@@ -52,17 +54,50 @@ function StateInfoObject(data)
 	{
 		this.responseTime = new Date().getTime()
 	}
+	this.update = function(timeout, query, cb)
+	{
+		var self = this
+		if (self.isExpired(timeout)) {
+			self.onRequest()
+			query(function(data) {
+				self.onResponse(data)
+				cb()
+			}, function(reason) {
+				self.onError()
+				cb()
+			})
+		}
+	}
+}
+
+/* ObjectState
+============================================================================= */
+
+function ObjectState(config) {
+	this.config = config
+	this.errCount = 0
+	this.firstErrorTime = null
 }
 
 /* WorkerState
 ============================================================================= */
 
 function WorkerState(config) {
-	this.config = config
+	ObjectState.call(this, config)
 	this.appdata = new StateInfoObject({})
-	this.errCount = 0
-	this.firstErrorTime = null
 }
+util.inherits(WorkerState, ObjectState)
+
+/* MinerState
+============================================================================= */
+
+function MinerState(config) {
+	ObjectState.call(this, config)
+	this.summary = new StateInfoObject({})
+	this.pools = new StateInfoObject({})
+	this.devs = new StateInfoObject({})
+}
+util.inherits(WorkerState, ObjectState)
 
 /* Module
 ============================================================================= */
@@ -88,6 +123,8 @@ function Application() {
     this.api = require('./ltcrabbit.js')
     this.api.appname = common.manifest.meta.name
     this.api.appversion = common.manifest.meta.version
+
+    this.cgminer = require('./cgminer.js')
 
     this.templates = require('../../dist/tmp/main/templates.js')
     
@@ -211,45 +248,121 @@ Application.prototype.onConfigReset = function() {
 /* Workers
 ============================================================================= */
 
-Application.prototype.stateForWorker = function(worker)
+Application.prototype.stateForWorker = function(config)
 {
     var self = this
-	if (!self.workers.hasOwnProperty(worker.UserId)) {
-	    var state = self.workers[worker.UserId] = new WorkerState(worker)
+	if (!self.workers.hasOwnProperty(config.UserId)) {
+	    var state = self.workers[config.UserId] = new WorkerState(config)
 	    return state
 	} else {
-	    return self.workers[worker.UserId]
+	    return self.workers[config.UserId]
 	}
 }
 
-/* Mouse events
+/* Miners
 ============================================================================= */
+
+Application.prototype.stateForMiner = function(config)
+{
+    var self = this
+	if (!self.miners.hasOwnProperty(config.Address)) {
+	    var state = self.miners[config.Address] = new MinerState(config)
+	    return state
+	} else {
+	    return self.miners[config.Address]
+	}
+}
+
+/* Update
+============================================================================= */
+
+Application.prototype.updateMiners = function()
+{
+	var self = this
+	var proxy = self.config.active.Farm.Proxy
+	if (proxy) {
+		self.config.active.Farm.Miners.forEach(function(v) {
+			var miner = v
+			if (!miner.Disabled) {
+				var info = self.stateForMiner(miner)
+				var minerProxy = miner.Proxy || proxy
+				var updateInterval = self.config.active.Farm.UpdateInterval * 1000
+				// Summary
+				info.summary.update(updateInterval, function(cb, eb) {
+					self.cgminer.command(minerProxy, info, {command: 'summary'}, function(data) {
+						cb(data.SUMMARY[0])
+					}, eb)
+				}, function() {
+					self.onStateChanged()
+				})
+				// Devices
+				info.devs.update(updateInterval, function(cb, eb) {
+					self.cgminer.command(minerProxy, info, {command: 'devs'}, function(data) {
+						cb(data.DEVS)
+					}, eb)
+				}, function() {
+					self.onStateChanged()
+				})
+			}
+		})
+	}
+}
 
 Application.prototype.update = function()
 {
     var self = this
     //console.log("Update:", self)
-	if ((self.config.active) && (self.config.active.Pool.Workers))
+	if (self.config.active)
 	{
-		self.config.active.Pool.Workers.forEach(function(v) {
-			var worker = v;
-			if (!worker.Disabled) {
-				var info = self.stateForWorker(worker)
-				if (info.appdata.isExpired(self.config.active.Pool.UpdateInterval * 1000)) {
-				    console.log('Expired:', info)
-					info.appdata.onRequest()
-					self.api.getappdata(worker.ApiKey, 
-						function(data) {
-							info.appdata.onResponse(data)
-							self.onWorkerUpdatePassed(info)					
-						}, function () {
-							info.appdata.onError()
-							self.onWorkerUpdateFailed(info, null)
-						}
-					)						
+		// Workers
+		if (self.config.active.Pool.Workers) {
+			self.config.active.Pool.Workers.forEach(function(v) {
+				var worker = v;
+				if (!worker.Disabled) {
+					var info = self.stateForWorker(worker)
+					if (info.appdata.isExpired(self.config.active.Pool.UpdateInterval * 1000)) {
+					    console.log('Expired:', info)
+						info.appdata.onRequest()
+						self.api.getappdata(worker.ApiKey, 
+							function(data) {
+								info.appdata.onResponse(data)
+								self.onWorkerUpdatePassed(info)					
+							}, function () {
+								info.appdata.onError()
+								self.onWorkerUpdateFailed(info, null)
+							}
+						)						
+					}
 				}
-			}
-		})
+			})
+		}
+		// Miners
+		self.updateMiners()
+		/*
+		var proxy = self.config.active.Farm.Proxy
+		if (proxy) {
+			self.config.active.Farm.Miners.forEach(function(v) {
+				var miner = v
+				if (!miner.Disabled) {
+					var info = self.stateForMiner(miner)
+					if (info.summary.isExpired(self.config.active.Farm.UpdateInterval * 1000)) {
+						console.log('Expired summary:', info)
+						info.summary.onRequest()
+						var minerProxy = miner.Proxy || proxy
+						self.cgminer.command(minerProxy, info, {command: 'summary'}, 
+							function(data) {
+								info.summary.onResponse(data.SUMMARY[0])
+								self.onStateChanged()
+							}, function (reason) {
+								info.summary.onError()
+								self.onStateChanged()
+							}
+						)						
+					}
+				}
+			})
+		}
+		*/
 	}
 }
 

@@ -37,7 +37,7 @@ body, h1, h2, h3, h4, h5, h6, p, a {
 .black-panel {
 	/* background-color: #0d0d0d; */
 	background-image: url("images/background.png");
-	background: linear-gradient(top, rgba(26,26,26,0.9), rgba(0,0,0,0.9));
+	background: linear-gradient(top, rgba(26,26,26,0.4), rgba(0,0,0,0.4));
 	color: #fff;	
 	width: 100%;	
 	border-radius: 3px;

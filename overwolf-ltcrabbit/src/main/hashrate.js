@@ -35,7 +35,7 @@ function Hashrate() {
 
 Hashrate.prototype.format = function(value) {
     var self = this
-    if (value===0) {
+    if (value === 0) {
         return 'n/a'
     }
     for (var key in self.rateKinds) {
