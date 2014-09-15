@@ -21,8 +21,10 @@ var hashrate = require('./hashrate.js')
 /* StateInfoObject
 ============================================================================= */
 
-function StateInfoObject(data)
+function StateInfoObject(owner, data)
 {
+	data = data || {}
+	this.owner = owner
 	this.requestTime = null
 	this.responseTime = null
 	this.emptyData = data
@@ -57,13 +59,16 @@ function StateInfoObject(data)
 	this.update = function(timeout, query, cb)
 	{
 		var self = this
+		cb = cb || function() {}
 		if (self.isExpired(timeout)) {
 			self.onRequest()
 			query(function(data) {
 				self.onResponse(data)
+				self.owner.onSuccess()
 				cb()
 			}, function(reason) {
 				self.onError()
+				self.owner.onError()
 				cb()
 			})
 		}
@@ -79,12 +84,24 @@ function ObjectState(config) {
 	this.firstErrorTime = null
 }
 
+ObjectState.prototype.onSuccess = function() {
+	this.errCount = 0
+	this.firstErrorTime = null
+}
+
+ObjectState.prototype.onError = function() {
+	if (this.errCount === 0) {
+		this.firstErrorTime = new Date().getTime()
+	}		
+	this.errCount += 1
+}
+
 /* WorkerState
 ============================================================================= */
 
 function WorkerState(config) {
 	ObjectState.call(this, config)
-	this.appdata = new StateInfoObject({})
+	this.appdata = new StateInfoObject(this)
 }
 util.inherits(WorkerState, ObjectState)
 
@@ -93,11 +110,11 @@ util.inherits(WorkerState, ObjectState)
 
 function MinerState(config) {
 	ObjectState.call(this, config)
-	this.summary = new StateInfoObject({})
-	this.pools = new StateInfoObject({})
-	this.devs = new StateInfoObject({})
+	this.summary = new StateInfoObject(this)
+	this.pools = new StateInfoObject(this)
+	this.devs = new StateInfoObject(this)
 }
-util.inherits(WorkerState, ObjectState)
+util.inherits(MinerState, ObjectState)
 
 /* Module
 ============================================================================= */
@@ -338,31 +355,6 @@ Application.prototype.update = function()
 		}
 		// Miners
 		self.updateMiners()
-		/*
-		var proxy = self.config.active.Farm.Proxy
-		if (proxy) {
-			self.config.active.Farm.Miners.forEach(function(v) {
-				var miner = v
-				if (!miner.Disabled) {
-					var info = self.stateForMiner(miner)
-					if (info.summary.isExpired(self.config.active.Farm.UpdateInterval * 1000)) {
-						console.log('Expired summary:', info)
-						info.summary.onRequest()
-						var minerProxy = miner.Proxy || proxy
-						self.cgminer.command(minerProxy, info, {command: 'summary'}, 
-							function(data) {
-								info.summary.onResponse(data.SUMMARY[0])
-								self.onStateChanged()
-							}, function (reason) {
-								info.summary.onError()
-								self.onStateChanged()
-							}
-						)						
-					}
-				}
-			})
-		}
-		*/
 	}
 }
 

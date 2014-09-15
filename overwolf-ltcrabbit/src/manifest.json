@@ -50,12 +50,12 @@
         },
         "externally_connectable": {
 	        "matches": [				
-				"http://localhost",
-				"https://localhost",
 				"http://goo.gl",
 				"https://goo.gl",
 				"http://fonts.googleapis.com",
 				"https://fonts.googleapis.com",
+				"http://*.google-analytics.com",
+				"https://*.google-analytics.com",
 				"http://*.ltcrabbit.com",
 				"https://*.ltcrabbit.com"
 	        ]
