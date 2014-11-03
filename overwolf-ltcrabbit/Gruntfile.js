@@ -57,10 +57,10 @@ module.exports = function(grunt) {
                     debug: true
                 },
                 options: {
-                    alias: ['src/main/index.js:app'],
+                    alias: ['./src/main/index.js:app'],
                 },
                 files: {
-                    '<%= dirs.pkg %>/main/app.js': ['src/main/index.js']
+                    '<%= dirs.pkg %>/main/app.js': ['./src/main/index.js']
                 }
             },
             settngs: {
@@ -68,10 +68,10 @@ module.exports = function(grunt) {
                     debug: true
                 },
                 options: {
-                    alias: ['src/settings/index.js:app'],
+                    alias: ['./src/settings/index.js:app'],
                 },
                 files: {
-                    '<%= dirs.pkg %>/settings/app.js': ['src/settings/index.js']
+                    '<%= dirs.pkg %>/settings/app.js': ['./src/settings/index.js']
                 }
             }
         },

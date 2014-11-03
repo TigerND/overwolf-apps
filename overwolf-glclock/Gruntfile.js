@@ -56,10 +56,10 @@ module.exports = function(grunt) {
                     debug: true
                 },
                 options: {
-                    alias: ['src/main/index.js:app'],
+                    alias: ['./src/main/index.js:app'],
                 },
                 files: {
-                    '<%= dirs.pkg %>/main/app.js': ['src/main/index.js']
+                    '<%= dirs.pkg %>/main/app.js': ['./src/main/index.js']
                 }
             }
         },
